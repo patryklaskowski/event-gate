@@ -19,6 +19,7 @@ class EventGate:
 
     ALPHA_LOWER_BOUND = 0
     ALPHA_UPPER_BOUND = 89
+    WIDTH_LOWER_BOUND = 1
     _is_initialized = False
 
     def __init__(self, x: int, y: int, width: int, alpha: int = 0):
@@ -122,6 +123,27 @@ class EventGate:
             raise OutOfRangeError(f'Alpha value `{value}` must be in range '
                                   f'[{self.ALPHA_LOWER_BOUND}, {self.ALPHA_UPPER_BOUND}]!')
         self._alpha = value
+
+    @property
+    def width(self) -> None:
+        """
+        Width getter
+
+        :returns alpha
+        """
+        return self._width
+
+    @width.setter
+    def width(self, value: int) -> None:
+        """
+        Width setter forces constraints
+
+        :parameter value
+        """
+        value = int(value)
+        if not value >= self.WIDTH_LOWER_BOUND:
+            raise OutOfRangeError(f'Width value `{value}` must be at least {self.WIDTH_LOWER_BOUND} not `{value}`!')
+        self._width = value
 
     def get_center(self) -> tuple[int, int]:
         """

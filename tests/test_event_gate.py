@@ -16,12 +16,19 @@ class TestEventGate(unittest.TestCase):
         self.assertEqual(slope, 0)
         self.assertEqual(bias, 5)
 
-    def test_alpha_upper_value_constraints(self):
+    def test_alpha_value_constraints(self):
         with self.assertRaises(OutOfRangeError):
             EventGate(5, 5, 10, alpha=90)
 
         with self.assertRaises(OutOfRangeError):
             EventGate(5, 5, 10, alpha=-1)
+
+    def test_width_value_constraints(self):
+        with self.assertRaises(OutOfRangeError):
+            EventGate(5, 5, 0, alpha=10)
+
+        with self.assertRaises(OutOfRangeError):
+            EventGate(5, 5, -20, alpha=10)
 
     def test_point_above_the_line_detection(self):
         gate = EventGate(500, 250, 200, 0)
