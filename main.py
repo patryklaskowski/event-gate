@@ -33,7 +33,7 @@ if __name__ == '__main__':
             image = utils.draw_size(image, inplace=True)
             image = utils.draw_params(image, line, inplace=True)
 
-            image = utils.draw_grid(img=image, func=line.is_point_above_the_line, n=N, inplace=True, draw_text=True)
+            image = utils.draw_grid(img=image, func=line.is_point_above_the_line, n=N, inplace=True, draw_text=False)
 
             image = utils.draw_line(image, (a_x, a_y), (b_x, b_y), inplace=True)
 
