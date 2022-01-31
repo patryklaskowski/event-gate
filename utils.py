@@ -36,7 +36,7 @@ def draw_size(img: np.ndarray, inplace=True) -> np.ndarray:
     return img
 
 
-def draw_params(img: np.ndarray, line, inplace=True) -> np.ndarray:
+def draw_line_attributes(img: np.ndarray, line, inplace=True) -> np.ndarray:
     if not inplace:
         img = img.copy()
     width, height, *_ = img.shape
@@ -69,6 +69,19 @@ def draw_point(img: np.ndarray, point: tuple[int, int], inplace=False, draw_text
     return img
 
 
+def draw_shadow(img: np.ndarray, points: list[tuple, ...], inplace: bool = False):
+    if len(points) == 0:
+        return img
+    if not inplace:
+        img = img.copy()
+    for point in points:
+        img = draw_point(img, point, inplace=True, draw_text=False)
+    pts = np.array(points, dtype=np.int32).reshape((1, -1, 2))
+    img = cv2.polylines(img, pts, isClosed=False, color=(0, 0, 0), thickness=1, lineType=cv2.LINE_AA)
+
+    return img
+
+
 def draw_grid(img: np.ndarray, func=None, n=25, inplace=False, draw_text=False):
     if not inplace:
         img = img.copy()
@@ -87,3 +100,26 @@ def draw_grid(img: np.ndarray, func=None, n=25, inplace=False, draw_text=False):
             img = draw_point(img, (x, y), draw_text=draw_text, inplace=inplace)
 
     return img
+
+
+def handle_points_callback(event, x, y, _, points, margin=5):
+    """
+    Callback supports creation and deletion of points.
+    Left mouseclick add new point
+    Right mouseclick removes single point
+
+    Meant to be used along with:
+    > cv2.setMouseCallback(WINDOW_NAME, callback, argument)
+    """
+    if event == cv2.EVENT_LBUTTONDOWN:
+        points.append((x, y))
+    elif event == cv2.EVENT_RBUTTONDOWN:
+        for point in points[:]:
+            if x - margin < point[0] < x + margin and y - margin < point[1] < y + margin:
+                points.remove(point)
+                return
+
+
+def create_mouse_callback(window_name: str, callback, param=None):
+    """Wrapper for mouse callbacks"""
+    cv2.setMouseCallback(window_name, callback, param)
